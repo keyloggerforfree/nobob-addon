@@ -70,8 +70,15 @@ docs/generated/
 # Project
 run/
 
-# LabyGradle | Addon Plugin
-build-data.txt
+# Loom / Polyfrost cache
+**/loom-cache/
+**/prebundled-jars/
 
-# Don't ignore libraries
-!libs/*.jar
+# Reference material (not part of the mod)
+examples/
+
+# Serena IDE plugin data
+.serena/
+
+# Local machine config (SDK paths, etc.) — must not be checked in
+local.properties
