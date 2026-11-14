@@ -4,6 +4,8 @@ on:
   pull_request:
   workflow_dispatch:
   push:
+    # Tags are built by release.yml.
+    branches: ["**"]
 
 concurrency:
   group: ${{ github.head_ref || format('{0}-{1}', github.ref, github.run_number) }}
@@ -18,37 +20,24 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7
-        with:
-          fetch-depth: 10
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@v5
+      # Loom 1.19 needs a Java 25 JVM to run Gradle, and the mod targets Java 25.
+      - name: Set up JDK 25
+        uses: actions/setup-java@v6
         with:
-          java-version: 17
+          java-version: 25
           distribution: temurin
 
-      - uses: actions/cache@v5
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-            **/loom-cache
-            **/prebundled-jars
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
-
-      - name: Chmod Gradle
-        run: chmod +x ./gradlew
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
 
       - name: Build
-        run: ./gradlew build --no-daemon
+        run: ./gradlew build
 
+      # Upload the jar itself instead of a zip; the artifact takes the jar's filename.
       - name: Upload Artifact
         uses: actions/upload-artifact@v7
         with:
-          name: NoBob
-          path: |
-            versions/*/build/libs/*.jar
-            !versions/*/build/libs/*-dev.jar
+          path: build/libs/*.jar
+          archive: false
           if-no-files-found: error

@@ -14,6 +14,4 @@ plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
 
-val mod_name: String by settings
-
-rootProject.name = mod_name
+rootProject.name = providers.gradleProperty("mod_name").get()
