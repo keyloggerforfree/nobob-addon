@@ -1,29 +1,33 @@
 package net.chinesespyware.nobob.handler;
 
-import net.chinesespyware.nobob.NoBob;
-import cc.polyfrost.oneconfig.events.event.Stage;
-import cc.polyfrost.oneconfig.events.event.TickEvent;
-import cc.polyfrost.oneconfig.libs.eventbus.Subscribe;
+import net.chinesespyware.nobob.config.NoBobConfig;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.client.entity.living.player.LocalClientPlayerEntity;
+import org.polyfrost.oneconfig.api.event.v1.EventManager;
+import org.polyfrost.oneconfig.api.event.v1.events.TickEvent;
 
-public class NoBobHandler {
+public final class NoBobHandler {
+
+    private NoBobHandler() {
+    }
+
+    public static void register() {
+        EventManager.register(TickEvent.End.class, NoBobHandler::onTickEnd);
+    }
 
     /**
-     * Zeroes the player's walked-distance every tick when enabled.
-     * Minecraft's view-bob is driven by distanceWalked; keeping it at 0 prevents
-     * the bobbing animation from playing while vanilla "View Bobbing" stays on.
+     * Zeroes the player's walked distance at the end of every tick when enabled.
+     * Minecraft's view bob is driven by walkDistance/lastWalkDistance (MCP:
+     * distanceWalkedModified/prevDistanceWalkedModified); keeping them at 0 stops
+     * the bobbing animation while vanilla "View Bobbing" stays on.
      */
-    @Subscribe
-    public void onTick(TickEvent event) {
-        if (event.stage != Stage.END) return;
-        if (!NoBob.config.enabled) return;
+    private static void onTickEnd() {
+        if (!NoBobConfig.enabled) return;
 
-        Minecraft mc = Minecraft.getMinecraft();
-        EntityPlayer player = mc.thePlayer;
+        LocalClientPlayerEntity player = Minecraft.getInstance().player;
         if (player == null) return;
 
-        player.distanceWalkedModified = 0.0F;
-        player.prevDistanceWalkedModified = 0.0F;
+        player.walkDistance = 0.0F;
+        player.lastWalkDistance = 0.0F;
     }
 }

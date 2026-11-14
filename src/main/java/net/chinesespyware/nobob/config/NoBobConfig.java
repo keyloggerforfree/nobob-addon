@@ -1,23 +1,22 @@
 package net.chinesespyware.nobob.config;
 
 import net.chinesespyware.nobob.NoBob;
-import cc.polyfrost.oneconfig.config.Config;
-import cc.polyfrost.oneconfig.config.annotations.Info;
-import cc.polyfrost.oneconfig.config.data.InfoType;
-import cc.polyfrost.oneconfig.config.data.Mod;
-import cc.polyfrost.oneconfig.config.data.ModType;
+import org.polyfrost.oneconfig.api.config.v1.Config;
+import org.polyfrost.oneconfig.api.config.v1.annotations.Info;
+import org.polyfrost.oneconfig.api.config.v1.annotations.Switch;
 
 public class NoBobConfig extends Config {
 
-    @Info(
-        text = "A mod that makes the Minecraft bobbing animation more subtle.",
-        type = InfoType.INFO,
-        size = 2
-    )
-    boolean _info = false;
+    @Info(title = "A mod that makes the Minecraft bobbing animation more subtle.")
+    public static String info = "";
+
+    // OneConfig v1 has no built-in mod toggle, so the switch is declared here.
+    @Switch(title = "Enabled")
+    public static boolean enabled = true;
+
+    public static final NoBobConfig INSTANCE = new NoBobConfig();
 
     public NoBobConfig() {
-        super(new Mod(NoBob.NAME, ModType.UTIL_QOL), NoBob.MODID + ".json");
-        initialize();
+        super(NoBob.MODID + ".json", NoBob.NAME, Category.QOL);
     }
 }

@@ -1,0 +1,23 @@
+{
+    "schemaVersion": 1,
+    "id": "${mod_id}",
+    "name": "${mod_name}",
+    "version": "${mod_version}",
+    "description": "Adds the option for a more decent bobbing animation.",
+    "authors": [
+        "JumpingPxl"
+    ],
+    "license": "LGPL-3.0",
+    "environment": "client",
+    "entrypoints": {
+        "client": [
+            "net.chinesespyware.nobob.NoBob"
+        ]
+    },
+    "depends": {
+        "minecraft": "${minecraft_version}",
+        "fabricloader": ">=${loader_version}",
+        "fabric-language-kotlin": "*",
+        "oneconfigv1": ">=${oneconfig_version}"
+    }
+}
